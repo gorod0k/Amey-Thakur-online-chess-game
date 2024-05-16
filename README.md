@@ -6,3 +6,10 @@ Todo: combine with https://github.com/fratorgano/SocketChess
 
 Demo:
 https://amey-thakur-online-chess-game.onrender.com
+
+NPM modules:
+path
+http
+chess.js
+express
+socket.io

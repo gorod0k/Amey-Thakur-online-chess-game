@@ -12,6 +12,12 @@ body {
     display:flex; 
     flex-direction:column; 
 }
+
+#chessGame
+{
+	width: 95% !important;
+}
+
  #singlePlayer, #multiPlayer, #joinButton{
     margin: 10px;
     width: 300px;
