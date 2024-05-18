@@ -22,7 +22,8 @@ const roomsList = new Set()
 let totalUsers = 0;
 
 //Getting a connection
-io.on('connection', (socket) => {
+io.on('connection', (socket) =>
+{
     totalUsers++;
     // console.log(totalUsers)
     //To render rooms list initially
@@ -42,7 +43,8 @@ io.on('connection', (socket) => {
             if (game.in_check()) {
                 io.to(room).emit('inCheck', game.turn())
             }
-            else {
+            else
+{
                 io.to(room).emit('updateStatus', game.turn())
             }
         }
@@ -51,6 +53,7 @@ io.on('connection', (socket) => {
     //Creating and joining the room
     socket.on('joinRoom', ({ user, room }, callback) => {
         //We have to limit the number of users in a room to be just 2
+// ! здесь на локалке сервис падает !
         if (io.nsps['/'].adapter.rooms[room] && io.nsps['/'].adapter.rooms[room].length === 2) {
             return callback('Already 2 users are there in the room!')
         }
@@ -61,7 +64,8 @@ io.on('connection', (socket) => {
                 alreadyPresent = true
             }
         }
-        // console.log(userData);
+        
+console.log(userData);
         //If same name user already present
         if (alreadyPresent) {
             return callback('Choose different name!')
@@ -79,7 +83,7 @@ io.on('connection', (socket) => {
         }
 
         //If two users are in the same room, we can start
-        if (io.nsps['/'].adapter.rooms[room].length === 2) {
+       if (io.nsps['/'].adapter.rooms[room].length === 2) {
             //Rooms List Delete
             roomsList.delete(room);
             io.emit('roomsList', Array.from(roomsList));
@@ -98,7 +102,8 @@ io.on('connection', (socket) => {
     })
 
     //For catching dropped event
-    socket.on('Dropped', ({ source, target, room }) => {
+    socket.on('Dropped', ({ source, target, room }) =>
+{
         var game = gameData[socket.id]
         var move = game.move({
             from: source,
@@ -120,7 +125,8 @@ io.on('connection', (socket) => {
     })
 
     //Disconnected
-    socket.on('disconnect', () => {
+    socket.on('disconnect', () =>
+{
         totalUsers--;
         io.emit('updateTotalUsers', totalUsers)
         var room = '', user = '';
@@ -135,7 +141,7 @@ io.on('connection', (socket) => {
         if (userData[room] == null) {
             //Rooms List Delete
             roomsList.delete(room);
-            io.emit('roomsList', Array.from(roomsList));
+            io.emit('roomsList', Array.from(roomsList)); 
             totalRooms = roomsList.length
             io.emit('totalRooms', totalRooms)
         }
@@ -150,3 +156,4 @@ server.listen(port, () =>
 {
 	console.log(`Server is up on port ${port}!`)
 })
+

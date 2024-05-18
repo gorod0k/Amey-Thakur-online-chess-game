@@ -1,3 +1,6 @@
+// Chessboard documentation: https://chessboardjs.com/docs
+// Chessboard documentation: www.npmjs.com/package/chess.js
+
 const formEl = document.querySelectorAll('#joinForm > div > input')
 const joinButtonEl = document.querySelector('#joinButton')
 const messageEl = document.querySelector('#message')
@@ -11,9 +14,12 @@ const multiPlayerEl = document.getElementById('multiPlayer');
 const totalRoomsEl = document.getElementById('rooms')
 const totalPlayersEl = document.getElementById('players')
 const chatContentEl = document.getElementById('chatContent')
+// already exist in star rating. js:
+//const footer= document.getElementById('footer')
+
 var config = {};
 var board = null;
-var game = new Chess()
+var game = new Chess( )
 var turnt = 0;
 
 // initializing semantic UI dropdown
@@ -30,8 +36,8 @@ $("#roomDropdown").dropdown({
     }
 });
 
-
-function onDragStart2(source, piece, position, orientation) {
+function onDragStart2(source, piece, position, orientation)
+{
     // do not pick up pieces if the game is over
     if (game.game_over()) {
         if (game.in_draw()) {
@@ -80,31 +86,58 @@ function onDrop2(source, target) {
     window.setTimeout(makeRandomMove, 250)
 }
 
-// update the board position after the piece snap
-// for castling, en passant, pawn promotion
-function onSnapEnd2() {
+// update the board position after the piece snap for castling, en passant, pawn promotion
+function onSnapEnd2()
+{
     board.position(game.fen())
 }
 
+//—————————————————————————
+// singlePlayer
+
+var start_pos = ''
+var start_default = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+var start_pos1 = '4k3/2pppp2/8/8/8/8/2PPPP2/4K3  w - - 0 1'
+var start_pos2 = '4k3/pppppppp/8/8/8/8/PPPPPPPP/4K3  w - - 0 1'
+var start_pos3 = '2b1kb2/pppppppp/8/8/8/8/PPPPPPPP/2B1KB2  w - - 0 1'
+var start_pos4 = '1nb1kbn1/pppppppp/8/8/8/8/PPPPPPPP/1NB1KBN1  w - - 0 1'
+var start_pos5 = 'rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNB1KBNR  w - - 0 1'
+
 singlePlayerEl.addEventListener('click', (e) => {
+	switch(star_rating.id)
+{
+  case 1: start_pos=start_pos1; break;
+  case 2: start_pos=start_pos2; break;
+case 3: start_pos=start_pos3; break;
+case 4: start_pos=start_pos4; break;
+case 5: start_pos=start_pos5; break;
+  default:
+    start_pos=start_default
+}
+	
     e.preventDefault();
     document.getElementById('gameMode').style.display = "none";
     document.querySelector('#chessGame').style.display = null;
     config = {
         draggable: true,
-        position: 'start',
+        position:  start_pos, //'start', 
         onDragStart: onDragStart2,
         onDrop: onDrop2,
         onSnapEnd: onSnapEnd2
     }
     board = Chessboard('myBoard', config);
+   
+   try { game.load( start_pos ) }
+    catch (e) { console.log(e) }
+
 })
 
 //Connection will be established after webpage is refreshed
 const socket = io()
 
 //Triggers after a piece is dropped on the board
-function onDrop(source, target) {
+function onDrop(source, target)
+{
     //emits event after piece is dropped
     var room = formEl[1].value;
     myAudioEl.play();
@@ -281,7 +314,10 @@ joinButtonEl.addEventListener('click', (e) => {
     }
 })
 
-multiPlayerEl.addEventListener('click', (e) => {
+//—————————————————————————
+// multiPlayer
+multiPlayerEl.addEventListener('click', (e) =>
+{
     e.preventDefault();
     document.getElementById('joinFormDiv').style.display = "block";
     document.getElementById('gameMode').style.display = "none";
