@@ -57,10 +57,6 @@
             </div>
         </div>
     </div>
-    
-    <pre><code id="test1"></code></pre>
-<pre><code id="test2"></code></pre>
-<pre><code id="test3"></code></pre>
 
     <div>
         <div id="gameMode">
@@ -316,9 +312,12 @@
 
 <script type="application/javascript">
 
-document.getElementById('test1').innerHTML      = Telegram.WebApp.version;
-    document.getElementById('test2').innerHTML = Telegram.WebApp.platform;
-document.getElementById('test3').innerHTML = JSON.stringify(Telegram.WebApp.initData, null, 2);
+document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
+    document.getElementById('platform').innerHTML = Telegram.WebApp.platform;
 
+var converted_tg_user_data = JSON.parse('{"' + Telegram.WebApp.initData.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
+document.getElementById('user1').innerHTML      = converted_tg_user_data.first_name, " ", converted_tg_user_data. last_name
+document.getElementById('user2').innerHTML  = decodeURIComponent(Telegram.WebApp.initData.first_name)
+document.getElementById('user3').innerHTML  = decodeURIComponent(Telegram.WebApp.initData.last_name)
 
 </script>
