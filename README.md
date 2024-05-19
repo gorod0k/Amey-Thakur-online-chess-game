@@ -1,5 +1,6 @@
 # ONLINE CHESS
 
+!!! https://github.com/shaack/chess-console?tab=readme-ov-file
 !!! https://shaack.com/projekte/cm-chessboard
 https://github.com/shaack/cm-chessboard
 
