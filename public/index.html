@@ -58,7 +58,7 @@
         </div>
     </div>
     
-    <pre><code id="webview_data"></code></pre>
+    <pre><code id="webview_data">i</code></pre>
 
     <div>
         <div id="gameMode">
@@ -395,44 +395,7 @@
                 }
             });
         },
-        changeMenuButton(close) {
-            document.querySelectorAll('button').forEach((btn) => btn.disabled = true);
-            const btnStatus       = document.querySelector('#btn_status');
-            btnStatus.textContent = 'Changing button...';
 
-            DemoApp.apiRequest('changeMenuButton', {}, function (result) {
-                document.querySelectorAll('button').forEach((btn) => btn.disabled = false);
-
-                if (result.response) {
-                    if (result.response.ok) {
-                        btnStatus.textContent   = 'Button changed!';
-                        btnStatus.className     = 'ok';
-                        btnStatus.style.display = 'block';
-                        Telegram.WebApp.close();
-                    } else {
-                        btnStatus.textContent   = result.response.description;
-                        btnStatus.className     = 'err';
-                        btnStatus.style.display = 'block';
-                        alert(result.response.description);
-                    }
-                } else if (result.error) {
-                    btnStatus.textContent   = result.error;
-                    btnStatus.className     = 'err';
-                    btnStatus.style.display = 'block';
-                    alert(result.error);
-                } else {
-                    btnStatus.textContent   = 'Unknown error';
-                    btnStatus.className     = 'err';
-                    btnStatus.style.display = 'block';
-                    alert('Unknown error');
-                }
-            });
-            if (close) {
-                setTimeout(function () {
-                    Telegram.WebApp.close();
-                }, 50);
-            }
-        },
         checkInitData() {
             const webViewStatus = document.querySelector('#webview_data_status');
             if (DemoApp.initDataUnsafe.query_id &&
@@ -451,27 +414,8 @@
                 });
             }
         },
-        sendText(spam) {
-            const textField = document.querySelector('#text_field');
-            const text      = textField.value;
-            if (!text.length) {
-                return textField.focus();
-            }
-            if (byteLength(text) > 4096) {
-                return alert('Text is too long');
-            }
-
-            const repeat = spam ? 10 : 1;
-            for (let i = 0; i < repeat; i++) {
-                Telegram.WebApp.sendData(text);
-            }
-        },
-        sendTime(spam) {
-            const repeat = spam ? 10 : 1;
-            for (let i = 0; i < repeat; i++) {
-                Telegram.WebApp.sendData(new Date().toString());
-            }
-        },
+        
+       
 
         // Alerts
         showAlert(message) {
@@ -480,24 +424,11 @@
         showConfirm(message) {
             Telegram.WebApp.showConfirm(message);
         },
-        requestWriteAccess() {
-            Telegram.WebApp.requestWriteAccess(function (result) {
-                if (result) {
-                    DemoApp.showAlert('Write access granted');
-                } else {
-                    DemoApp.showAlert('Write access denied');
-                }
-            });
-        },
-        requestContact() {
-            Telegram.WebApp.requestContact(function (result) {
-                if (result) {
-                    DemoApp.showAlert('Contact granted');
-                } else {
-                    DemoApp.showAlert('Contact denied');
-                }
-            });
-        },
+        
+   //     requestWriteAccess() 
+            
+   //     requestContact() 
+            
         isVersionAtLeast(version) {
             return Telegram.WebApp.isVersionAtLeast(version);
         },
@@ -513,95 +444,20 @@
                 throw new Error('This feature is not supported in this version of Telegram');
             }
         },
-        showPopup() {
-            Telegram.WebApp.showPopup({
-                title  : 'Popup title',
-                message: 'Popup message',
-                buttons: [
-                    {id: 'delete', type: 'destructive', text: 'Delete all'},
-                    {id: 'faq', type: 'default', text: 'Open FAQ'},
-                    {type: 'cancel'},
-                ]
-            }, function (buttonId) {
-                if (buttonId === 'delete') {
-                    DemoApp.showAlert("'Delete all' selected");
-                } else if (buttonId === 'faq') {
-                    Telegram.WebApp.openLink('https://telegram.org/faq');
-                }
-            });
-        },
-        showScanQrPopup: function (linksOnly) {
-            Telegram.WebApp.showScanQrPopup({
-                text: linksOnly ? 'with any link' : 'for test purposes'
-            }, function (text) {
-                if (linksOnly) {
-                    const lowerText = text.toString().toLowerCase();
-                    if (lowerText.substring(0, 7) === 'http://' ||
-                        lowerText.substring(0, 8) === 'https://'
-                    ) {
-                        setTimeout(function () {
-                            Telegram.WebApp.openLink(text);
-                        }, 50);
-
-                        return true;
-                    }
-                } else {
-                    DemoApp.showAlert(text);
-
-                    return true;
-                }
-            });
-        },
+        
+        /*
+        
+        showScanQrPopup
 
         // Permissions
-        requestLocation(el) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    el.nextElementSibling.innerHTML = '(' + position.coords.latitude + ', ' + position.coords.longitude + ')';
-                    el.nextElementSibling.className = 'ok';
-                });
-            } else {
-                el.nextElementSibling.innerHTML = 'Geolocation is not supported in this browser.';
-                el.nextElementSibling.className = 'err';
-            }
-            return false;
-        },
+      requestLocation(el) {
+           
         requestVideo(el) {
-            if (navigator.mediaDevices) {
-                navigator.mediaDevices.getUserMedia({audio: false, video: true}).then(function (stream) {
-                    el.nextElementSibling.innerHTML = '(Access granted)';
-                });
-            } else {
-                el.nextElementSibling.innerHTML = 'Media devices is not supported in this browser.';
-                el.nextElementSibling.className = 'err';
-            }
-            return false;
-        },
+  
         requestAudio(el) {
-            if (navigator.mediaDevices) {
-                navigator.mediaDevices.getUserMedia({audio: true, video: false}).then(function (stream) {
-                    el.nextElementSibling.innerHTML = '(Access granted)';
-                    el.nextElementSibling.className = 'ok';
-                });
-            } else {
-                el.nextElementSibling.innerHTML = 'Media devices is not supported in this browser.';
-                el.nextElementSibling.className = 'err';
-            }
-            return false;
-        },
-        requestAudioVideo(el) {
-            if (navigator.mediaDevices) {
-                navigator.mediaDevices.getUserMedia({audio: true, video: true}).then(function (stream) {
-                    el.nextElementSibling.innerHTML = '(Access granted)';
-                    el.nextElementSibling.className = 'ok';
-                });
-            } else {
-                el.nextElementSibling.innerHTML = 'Media devices is not supported in this browser.';
-                el.nextElementSibling.className = 'err';
-            }
-            return false;
-        },
-
+    
+        requestAudioVideo(el)
+ */
             const authData = DemoApp.initData || '';
             fetch('/demo/api', {
                 method     : 'POST',
@@ -646,34 +502,9 @@
         }
     };
 
-    function byteLength(str) {
-        if (window.Blob) {
-            try {
-                return new Blob([str]).size;
-            } catch (e) {
-            }
-        }
+    
 
-        let s = str.length;
-        for (let i = str.length - 1; i >= 0; i--) {
-            const code = str.charCodeAt(i);
-            if (code > 0x7f && code <= 0x7ff) {
-                s++;
-            } else if (code > 0x7ff && code <= 0xffff) {
-                s += 2;
-            }
-
-            if (code >= 0xDC00 && code <= 0xDFFF) {
-                i--;
-            }
-        }
-        return s;
-    }
-
-    function round(val, d) {
-        const k = Math.pow(10, d || 0);
-        return Math.round(val * k) / k;
-    }
+    
 </script>
 
 <script type="application/javascript">
@@ -684,27 +515,9 @@
      document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
     document.getElementById('platform').innerHTML = Telegram.WebApp.platform;
 
-    Telegram.WebApp.onEvent('themeChanged', function () {
-        document.getElementById('theme_data').innerHTML = JSON.stringify(Telegram.WebApp.themeParams, null, 2);
-    });
-
-    if (DemoApp.initDataUnsafe.query_id) {
-        document.getElementById('main_btn').style.display = 'block';
-    }
-    document.getElementById('with_webview_btn').style.display = !!DemoApp.initDataUnsafe.query_id && !DemoApp.initDataUnsafe.receiver ? 'block' : 'none';
+    
+    
     document.getElementById('webview_data').innerHTML         = JSON.stringify(DemoApp.initDataUnsafe, null, 2);
-
-    document.getElementById('theme_data').innerHTML = JSON.stringify(Telegram.WebApp.themeParams, null, 2);
-    document.getElementById('regular_link').setAttribute('href', document.getElementById('regular_link').getAttribute('href') + location.hash);
-    document.getElementById('text_field').focus();
-    document.getElementById('regular_field').addEventListener('input', function (e) {
-        const val = this.value.toLowerCase();
-        if (val.indexOf('progress') >= 0) {
-            Telegram.WebApp.MainButton.showProgress();
-        } else {
-            Telegram.WebApp.MainButton.hideProgress();
-        }
-    });
 
     
 
