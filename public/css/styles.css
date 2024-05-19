@@ -17,10 +17,19 @@ body {
 
 #chessGame
 {
-	width: 95% !important;
+	width: 100% !important;
 }
 
- #singlePlayer, #multiPlayer, #joinButton{
+#myBoard
+{
+	width: 95% !important;
+	margin-left: auto;
+  margin-right: auto;
+margin-top: 10px; margin-bottom: 10px;
+}
+
+ #singlePlayer, #multiPlayer, #joinButton, #cm-chessboard
+{
     margin: 10px;
     width: 300px;
     padding: 20px;
@@ -80,3 +89,20 @@ body {
     border-radius: 5px;
     float : left;    
 }
+
+#grey_board, #orange_board, #blue_board, #green_board
+{ width: 20%;
+	}
+
+/*
+@media screen and (max-width: 1039px) {
+  body > main{
+    ...
+  }
+}
+
+@media screen and (min-width: 1040px) {
+  body > main{
+    ...
+  }
+} */

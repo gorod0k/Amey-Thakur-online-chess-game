@@ -8,7 +8,7 @@
     
     <link rel="icon" href="./img/icon.jpg">
     <link rel="stylesheet" type="text/css" href="./css/semantic.min.css">
-    <link rel="stylesheet" href="./css/chessboard-1.0.0.min.css">
+    <link rel="stylesheet" href="./css/chessboard-1.0.0.css">
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="stylesheet" href="./css/star rating.css">
 </head>
@@ -57,11 +57,17 @@
     <div>
         <div id="gameMode">
             <h1 style="text-align: center; margin: 10px; font-size: 35px;"> GAME MODE</h1>
+            
             <div style="text-align:center;">
-                <button class="game ui black button " id="singlePlayer">SINGLE PLAYER</button>
+                <button class="game ui black button " id="singlePlayer"> SINGLE PLAYER</button>
             </div>
+            
             <div style="text-align:center;">
-                <button class="game ui black button " id="multiPlayer">MULTI PLAYER</button>
+                <button class="game ui black button " id="multiPlayer"> MULTI PLAYER</button>
+            </div>
+            
+            <div style="text-align:center;">
+                <button class="game ui black button " id="cm-chessboard" onclick="location.href='/examples/validate-moves.html'"> NEW • STYLE • BOARD </button>
             </div>
             
             <hr>
@@ -225,12 +231,13 @@
             <!-- Chess Board -->
             <div id="chessGame" style="display: none;">
                 <!-- Color Schemes -->
-                <div style="text-align: center; margin: 10px;">
-                    <button id="grey_board" class="ui button black color_b">GREY</button>
-                    <button id="orange_board" class="ui button grey color_b">ORANGE</button>
-                    <button id="green_board" class="ui button grey color_b">GREEN</button>
-                    <button id="blue_board" class="ui button grey color_b">BLUE</button>
+                <div style="text-align: center; margin: 5px;">
+                    <button id="grey_board"> GREY </button>
+                    <button id="orange_board"> ORANGE</button>
+                    <button id="green_board">GREEN</button>
+                    <button id="blue_board">BLUE</button>
                 </div>
+                
                 <!-- Status and PGN -->
                 <div id="statusPGN" style="text-align: center; display: none;">
                     <div>
@@ -246,9 +253,11 @@
                         <div id="pgn" style="overflow: auto; white-space: nowrap; width: 500px; margin: auto;"></div>
                     </div>
                 </div>
-                <div id="myBoard" style="width: 95%; margin: auto; margin-top: 10px; margin-bottom: 10px;"></div>
+                
+                <div id="myBoard"></div>
+                
                 <div style="text-align: center; margin-bottom: 20px;">
-                    <a href="/" class="ui button black" style="width: 95%;">LEAVE GAME</a>
+                    <a href="/" class="ui button" style="width: 95%;">LEAVE GAME</a>
                 </div>
 
             </div>
@@ -286,8 +295,7 @@
     <script src="./js/semantic.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./js/chessboard-1.0.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.js"
-        integrity="sha384-s3XgLpvmHyscVpijnseAmye819Ee3yaGa8NxstkJVyA6nuDFjt59u1QvuEl/mecz"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.js"
         crossorigin="anonymous"></script>
     <script  src="./js/star rating.js"></script>
     <script src="./js/app.js"></script>

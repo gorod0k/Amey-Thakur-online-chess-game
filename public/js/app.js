@@ -1,5 +1,3 @@
-// Chessboard documentation: https://chessboardjs.com/docs
-// Chessboard documentation: www.npmjs.com/package/chess.js
 
 const formEl = document.querySelectorAll('#joinForm > div > input')
 const joinButtonEl = document.querySelector('#joinButton')
@@ -16,6 +14,10 @@ const totalPlayersEl = document.getElementById('players')
 const chatContentEl = document.getElementById('chatContent')
 // already exist in star rating. js:
 //const footer= document.getElementById('footer')
+const btn_grey_board = document.querySelector('#grey_board')
+const btn_orange_board = document.querySelector('#orange_board')
+const btn_green_board = document.querySelector('#green_board')
+const btn_blue_board = document.querySelector('#blue_board')
 
 var config = {};
 var board = null;
@@ -26,7 +28,6 @@ var turnt = 0;
 $('.ui.dropdown')
     .dropdown();
 
-
 // function for defining onchange on dropdown menus
 $("#roomDropdown").dropdown({
     onChange: function (val) {
@@ -36,7 +37,66 @@ $("#roomDropdown").dropdown({
     }
 });
 
-function onDragStart2(source, piece, position, orientation)
+//—————————————————————————
+/* попробовать подсветку ходов
+
+var whiteSquareGrey = '#a9a9a9'
+var blackSquareGrey = '#696969'
+
+function removeGreySquares () {
+  $('#myBoard .square-55d63').css('background', '')
+}
+
+function greySquare (square) {
+  var $square = $('#myBoard .square-' + square)
+
+  var background = whiteSquareGrey
+  if ($square.hasClass('black-3c85d')) {
+    background = blackSquareGrey
+  }
+
+  $square.css('background', background)
+}
+
+function onMouseoverSquare (square, piece) {
+  // get list of possible moves for this square
+  var moves = game.moves({
+    square: square,
+    verbose: true
+  })
+
+  // exit if there are no moves available for this square
+  if (moves.length === 0) return
+
+  // highlight the square they moused over
+  greySquare(square)
+
+  // highlight the possible squares for this piece
+  for (var i = 0; i < moves.length; i++) {
+    greySquare(moves[i].to)
+  }
+}
+
+function onDrop (source, target) {
+  removeGreySquares()
+...
+  })
+
+// Note that onMouseoutSquare will not fire during piece drag and drop. Use onDragMove.
+function onMouseoutSquare (square, piece) {
+  removeGreySquares()
+}
+
+var config = {
+...
+  onMouseoutSquare: onMouseoutSquare,
+  onMouseoverSquare: onMouseoverSquare,
+  
+}
+*/
+//—————————————————————————
+
+function onDragStart2 (source, piece, position, orientation)
 {
     // do not pick up pieces if the game is over
     if (game.game_over()) {
@@ -54,6 +114,11 @@ function onDragStart2(source, piece, position, orientation)
 
     // only pick up pieces for White
     if (piece.search(/^b/) !== -1) return false
+    
+      /* or if it's not that side's turn
+  if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+      (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+    return false */
 }
 
 function makeRandomMove() {
@@ -71,13 +136,15 @@ function makeRandomMove() {
     board.position(game.fen());
 }
 
-function onDrop2(source, target) {
+function onDrop2(source, target)
+{
     // see if the move is legal
     var move = game.move({
         from: source,
         to: target,
         promotion: 'q' // NOTE: always promote to a queen for example simplicity
     })
+    
     myAudioEl.play();
     // illegal move
     if (move === null) return 'snapback'
@@ -221,7 +288,8 @@ socket.on('gameOver', (turn, win) => {
 })
 
 //Client disconnected in between
-socket.on('disconnectedStatus', () => {
+socket.on('disconnectedStatus', () =>
+{
     alert('Opponent left the game!!')
     messageEl.textContent = 'Opponent left the game!!'
 })
@@ -332,7 +400,8 @@ multiPlayerEl.addEventListener('click', (e) =>
     }
 })
 
-const applyColorScheme = (black, white) => {
+const applyColorScheme = (black, white) =>
+{
     const blackEl = document.querySelectorAll('.black-3c85d');
     for (var i = 0; i < blackEl.length; i++) {
         blackEl[i].style.backgroundColor = black;
@@ -345,54 +414,43 @@ const applyColorScheme = (black, white) => {
     }
 }
 
-//For removing class from all buttons
-const removeClass = () => {
-    const buttonEl = document.querySelectorAll('.color_b');
-    for (var i = 0; i < buttonEl.length; i++) {
-        buttonEl[i].classList.remove('black');
-        buttonEl[i].classList.remove('grey');
-    }
-}
-
 // Color Buttons
-document.getElementById('grey_board').addEventListener('click', e => {
+// dark selected btn
+document.getElementById('grey_board').addEventListener('click', e =>
+{
     e.preventDefault();
-    removeClass();
-    document.getElementById('grey_board').classList.add('black');
-    document.getElementById('orange_board').classList.add('grey');
-    document.getElementById('green_board').classList.add('grey');
-    document.getElementById('blue_board').classList.add('grey');
-    applyColorScheme("#E1E1E1", "#FFFFFF");
+    btn_grey_board.style.background='grey';
+    btn_orange_board.style.background='lightgrey';
+    btn_green_board.style.background='lightgrey';
+    btn_blue_board.style.background='lightgrey';
+    applyColorScheme("white", "grey");
 })
 
 document.getElementById('orange_board').addEventListener('click', e => {
     e.preventDefault();
-    removeClass();
-    document.getElementById('grey_board').classList.add('grey');
-    document.getElementById('orange_board').classList.add('black');
-    document.getElementById('green_board').classList.add('grey');
-    document.getElementById('blue_board').classList.add('grey');
+    btn_grey_board.style.background='lightgrey';
+    btn_orange_board.style.background='grey';
+    btn_green_board.style.background='lightgrey';
+    btn_blue_board.style.background='lightgrey';
     applyColorScheme("#D18B47", "#FFCE9E");
 })
 
 document.getElementById('green_board').addEventListener('click', e => {
     e.preventDefault();
-    removeClass();
-    document.getElementById('grey_board').classList.add('grey');
-    document.getElementById('orange_board').classList.add('grey');
-    document.getElementById('green_board').classList.add('black');
-    document.getElementById('blue_board').classList.add('grey');
+    btn_grey_board.style.background='lightgrey';
+    btn_orange_board.style.background='lightgrey';
+    btn_green_board.style.background='grey';
+    btn_blue_board.style.background='lightgrey';
     applyColorScheme("#58AC8A", "#FFFFFF");
 })
 
 document.getElementById('blue_board').addEventListener('click', e => {
     e.preventDefault();
-    removeClass();
-    document.getElementById('grey_board').classList.add('grey');
-    document.getElementById('orange_board').classList.add('grey');
-    document.getElementById('green_board').classList.add('grey');
-    document.getElementById('blue_board').classList.add('black');
-    applyColorScheme("#727FA2", "#C3C6BE");
+    btn_grey_board.style.background='lightgrey';
+    btn_orange_board.style.background='lightgrey';
+    btn_green_board.style.background='lightgrey';
+    btn_blue_board.style.background='grey';
+    applyColorScheme("#727FA2", "lightgrey");
 })
 
 // Messages Modal
