@@ -294,7 +294,11 @@
     
     <div id="footer"
         style="background-color: black; color: white; margin-top:auto; padding: 15px; text-align: center; font-size: 15px;">
-        <i> footer </i></div>
+           
+        Version: <span id="ver"></span>,
+        platform: <span id="platform"></span>
+
+</div>
         
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"
         integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
@@ -597,25 +601,6 @@
             }
             return false;
         },
-        testClipboard(el) {
-            Telegram.WebApp.readTextFromClipboard(function (clipText) {
-                if (clipText === null) {
-                    el.nextElementSibling.innerHTML = 'Clipboard text unavailable.';
-                    el.nextElementSibling.className = 'err';
-                } else {
-                    el.nextElementSibling.innerHTML = '(Read from clipboard: Â«' + clipText + 'Â»)';
-                    el.nextElementSibling.className = 'ok';
-                }
-            });
-            return false;
-        },
-
-        // Other
-        apiRequest(method, data, onCallback) {
-            // DISABLE BACKEND FOR FRONTEND DEMO
-            // YOU CAN USE YOUR OWN REQUESTS TO YOUR OWN BACKEND
-            // CHANGE THIS CODE TO YOUR OWN
-            return onCallback && onCallback({error: 'This function (' + method + ') should send requests to your backend. Please, change this code to your own.'});
 
             const authData = DemoApp.initData || '';
             fetch('/demo/api', {
@@ -638,22 +623,12 @@
         }
     }
 
-    const DemoAppMenu = {
-        init() {
-            DemoApp.init();
-            document.body.classList.add('gray');
-            Telegram.WebApp.setHeaderColor('secondary_bg_color');
-        }
-    };
-
     const DemoAppInitData = {
         init() {
             DemoApp.init();
-            Telegram.WebApp.onEvent('themeChanged', function () {
-                document.getElementById('theme_data').innerHTML = JSON.stringify(Telegram.WebApp.themeParams, null, 2);
-            });
+            
             document.getElementById('webview_data').innerHTML = JSON.stringify(DemoApp.initDataUnsafe, null, 2);
-            document.getElementById('theme_data').innerHTML   = JSON.stringify(Telegram.WebApp.themeParams, null, 2);
+            
             DemoApp.checkInitData();
         }
     };
@@ -705,6 +680,9 @@
     /*
      * This part of code is used to initialize the demo app and set up the event handlers we need.
      */
+     
+     document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
+    document.getElementById('platform').innerHTML = Telegram.WebApp.platform;
 
     Telegram.WebApp.onEvent('themeChanged', function () {
         document.getElementById('theme_data').innerHTML = JSON.stringify(Telegram.WebApp.themeParams, null, 2);
@@ -728,8 +706,7 @@
         }
     });
 
-    document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
-    document.getElementById('platform').innerHTML = Telegram.WebApp.platform;
+    
 
     // ? работает только в attachment menu
     let pic = document.createElement('img'); //создаем img
@@ -753,7 +730,6 @@
         }
     }
 
-    DemoApp.checkInitData();
-    DemoApp.init();
+
 
 </script>
