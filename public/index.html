@@ -314,7 +314,10 @@
 
 <script type="application/javascript">
 
+document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
+    document.getElementById('platform').innerHTML = Telegram.WebApp.platform;
 
+    document.getElementById('webview_data').innerHTML = JSON.stringify(Telegram.WebApp.initData, null, 2);
 
 /*
 * This is a demo code for Telegram WebApp for Bots
@@ -440,11 +443,6 @@
     /*
      * This part of code is used to initialize the demo app and set up the event handlers we need.
      */
-     
-     document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
-    document.getElementById('platform').innerHTML = Telegram.WebApp.platform;
-
-    document.getElementById('webview_data').innerHTML = JSON.stringify(Telegram.WebApp.initData, null, 2);
 
     // ? работает только в attachment menu
     let pic = document.createElement('img'); //создаем img
