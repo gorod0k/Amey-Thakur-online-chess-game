@@ -341,60 +341,9 @@
         close() {
             Telegram.WebApp.close();
         },
-        toggleMainButton(el)
-        {
-            const mainButton = Telegram.WebApp.MainButton;
-            if (mainButton.isVisible) {
-                mainButton.hide();
-                el.innerHTML = 'Show Main Button';
-            } else {
-                mainButton.show();
-                el.innerHTML = 'Hide Main Button';
-            }
-        },
+        
 
         // actions
-        sendMessage(msg_id, with_webview) {
-            if (!DemoApp.initDataUnsafe.query_id) {
-                alert('WebViewQueryId not defined');
-                return;
-            }
-
-            document.querySelectorAll('button').forEach((btn) => btn.disabled = true);
-
-            const btn       = document.querySelector('#btn_status');
-            btn.textContent = 'Sending...';
-
-            DemoApp.apiRequest('sendMessage', {
-                msg_id      : msg_id || '',
-                with_webview: !DemoApp.initDataUnsafe.receiver && with_webview ? 1 : 0
-            }, function (result) {
-                document.querySelectorAll('button').forEach((btn) => btn.disabled = false);
-
-                if (result.response) {
-                    if (result.response.ok) {
-                        btn.textContent   = 'Message sent successfully!';
-                        btn.className     = 'ok';
-                        btn.style.display = 'block';
-                    } else {
-                        btn.textContent   = result.response.description;
-                        btn.className     = 'err';
-                        btn.style.display = 'block';
-                        alert(result.response.description);
-                    }
-                } else if (result.error) {
-                    btn.textContent   = result.error;
-                    btn.className     = 'err';
-                    btn.style.display = 'block';
-                    alert(result.error);
-                } else {
-                    btn.textContent   = 'Unknown error';
-                    btn.className     = 'err';
-                    btn.style.display = 'block';
-                    alert('Unknown error');
-                }
-            });
-        },
 
         checkInitData() {
             const webViewStatus = document.querySelector('#webview_data_status');
@@ -414,8 +363,6 @@
                 });
             }
         },
-        
-       
 
         // Alerts
         showAlert(message) {
@@ -483,31 +430,13 @@
         init() {
             DemoApp.init();
             
-            document.getElementById('webview_data').innerHTML = JSON.stringify(DemoApp.initDataUnsafe, null, 2);
+            
             
             DemoApp.checkInitData();
         }
     };
 
-    const DemoAppViewport = {
-        init() {
-            DemoApp.init();
-            Telegram.WebApp.onEvent('viewportChanged', DemoAppViewport.setData);
-            DemoAppViewport.setData();
-        },
-        setData() {
-            document.querySelector('.viewport-border').setAttribute('text', window.innerWidth + ' x ' + round(Telegram.WebApp.viewportHeight, 2))
-            document.querySelector('.viewport-stable_border').setAttribute('text', window.innerWidth + ' x ' + round(Telegram.WebApp.viewportStableHeight, 2) +
-                ' | is_expanded: ' + (Telegram.WebApp.isExpanded ? 'true' : 'false'));
-        }
-    };
-
-    
-
-    
-</script>
-
-<script type="application/javascript">
+   
     /*
      * This part of code is used to initialize the demo app and set up the event handlers we need.
      */
@@ -515,11 +444,7 @@
      document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
     document.getElementById('platform').innerHTML = Telegram.WebApp.platform;
 
-    
-    
-    document.getElementById('webview_data').innerHTML         = JSON.stringify(DemoApp.initDataUnsafe, null, 2);
-
-    
+    document.getElementById('webview_data').innerHTML = JSON.stringify(Telegram.WebApp.initData, null, 2);
 
     // ? работает только в attachment menu
     let pic = document.createElement('img'); //создаем img
