@@ -329,10 +329,7 @@ tg.MainButton.text = "Changed Text"; //изменяем текст кнопки
    tg.MainButton.setParams({"color": "#143F6B"}); //так изменяются все параметры
 */
 
-let usercard = document.getElementById("userinfo"); //получаем блок usercard 
-let profName = document.createElement('p'); //создаем параграф
-profName.innerText = `, ${tg.initDataUnsafe.user.first_name} ${tg.initDataUnsafe.user.last_name} (${tg.initDataUnsafe.user.username}) `;
-   //выдем имя, "фамилию", через тире username и код языка
-   usercard.appendChild(profName); //добавляем
+document.getElementById('userinfo').innerHTML = `Hello, ${tg.initDataUnsafe.user.first_name} ${tg.initDataUnsafe.user.last_name}
+(${tg.initDataUnsafe.user.username}) `;
 
 </script>
