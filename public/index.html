@@ -58,11 +58,11 @@
         </div>
     </div>
     
-       <h1 id="userinfo">Hello </h1>
+       <h1 id="userinfo"></h1>
 
     <div>
         <div id="gameMode">
-            <h1 style="text-align: center; margin: 10px; font-size: 35px;"> GAME MODE</h1>
+            <h1> GAME MODE</h1>
             
             <div style="text-align:center;">
                 <button class="game ui black button " id="singlePlayer"> SINGLE PLAYER</button>
@@ -329,7 +329,6 @@ tg.MainButton.text = "Changed Text"; //изменяем текст кнопки
    tg.MainButton.setParams({"color": "#143F6B"}); //так изменяются все параметры
 */
 
-document.getElementById('userinfo').innerHTML = `Hello, ${tg.initDataUnsafe.user.first_name} ${tg.initDataUnsafe.user.last_name}
-(${tg.initDataUnsafe.user.username}) `;
+document.getElementById('userinfo').innerHTML = `Hello, ${tg.initDataUnsafe.user.first_name} ${tg.initDataUnsafe.user.last_name} (${tg.initDataUnsafe.user.username}) `;
 
 </script>

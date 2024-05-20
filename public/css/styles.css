@@ -15,6 +15,8 @@ body {
     flex-direction:column; 
 }
 
+h1 { text-align: center; }
+
 #chessGame
 {
 	width: 100% !important;
