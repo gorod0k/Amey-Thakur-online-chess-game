@@ -58,9 +58,7 @@
         </div>
     </div>
     
-       <span id="user1">1</span>
-          <span id="user2">2</span>
-             <span id="user3">3</span>
+       <span id="userinfo">1</span>
 
     <div>
         <div id="gameMode">
@@ -316,12 +314,27 @@
 
 <script type="application/javascript">
 
-document.getElementById('ver').innerHTML      = Telegram.WebApp.version;
-    document.getElementById('platform').innerHTML = Telegram.WebApp.platform;
+let tg = window.Telegram.WebApp; //получаем объект webapp телеграма 
 
-var converted_tg_user_data = JSON.parse('{"' + Telegram.WebApp.initData.replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) })
-document.getElementById('user1').innerHTML      = converted_tg_user_data.first_name, " ", converted_tg_user_data. last_name
-document.getElementById('user2').innerHTML  = decodeURIComponent(Telegram.WebApp.initData.first_name)
-document.getElementById('user3').innerHTML  = decodeURIComponent(Telegram.WebApp.initData.last_name)
+tg.expand(); //расширяем на все окно  
+
+document.getElementById('ver').innerHTML      = tg.version;
+document.getElementById('platform').innerHTML = tg.platform;
+/*
+// MainButton текст и цвет
+tg.MainButton.text = "Changed Text"; //изменяем текст кнопки 
+   tg.MainButton.setText("Changed Text1"); //изменяем текст кнопки иначе
+   tg.MainButton.textColor = "#F55353"; //изменяем цвет текста кнопки
+   tg.MainButton.color = "#143F6B"; //изменяем цвет бэкграунда кнопки
+   tg.MainButton.setParams({"color": "#143F6B"}); //так изменяются все параметры
+*/
+
+let usercard = document.getElementById("userinfo"); //получаем блок usercard 
+let profName = document.createElement('p'); //создаем параграф
+profName.innerText = `${tg.initDataUnsafe.user.first_name}
+   ${tg.initDataUnsafe.user.last_name}
+   ${tg.initDataUnsafe.user.username} (${tg.initDataUnsafe.user.language_code})`;
+   //выдем имя, "фамилию", через тире username и код языка
+   usercard.appendChild(profName); //добавляем
 
 </script>
