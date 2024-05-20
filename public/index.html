@@ -58,7 +58,7 @@
         </div>
     </div>
     
-       <span id="userinfo">1</span>
+       <h1 id="userinfo">Hello </h1>
 
     <div>
         <div id="gameMode">
@@ -319,7 +319,7 @@ let tg = window.Telegram.WebApp; //получаем объект webapp теле
 tg.expand(); //расширяем на все окно  
 
 document.getElementById('ver').innerHTML      = tg.version;
-document.getElementById('platform').innerHTML = tg.platform;
+document.getElementById('platform').innerHTML = tg.platform, ' ', tg.initDataUnsafe.user.language_code
 /*
 // MainButton текст и цвет
 tg.MainButton.text = "Changed Text"; //изменяем текст кнопки 
@@ -331,9 +331,7 @@ tg.MainButton.text = "Changed Text"; //изменяем текст кнопки
 
 let usercard = document.getElementById("userinfo"); //получаем блок usercard 
 let profName = document.createElement('p'); //создаем параграф
-profName.innerText = `${tg.initDataUnsafe.user.first_name}
-   ${tg.initDataUnsafe.user.last_name}
-   ${tg.initDataUnsafe.user.username} (${tg.initDataUnsafe.user.language_code})`;
+profName.innerText = `, ${tg.initDataUnsafe.user.first_name} ${tg.initDataUnsafe.user.last_name} (${tg.initDataUnsafe.user.username}) `;
    //выдем имя, "фамилию", через тире username и код языка
    usercard.appendChild(profName); //добавляем
 
