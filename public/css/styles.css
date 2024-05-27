@@ -1,3 +1,4 @@
+/* gradient background */
 body {
     margin: auto;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -86,21 +87,17 @@ body {
     flex-direction:column; 
 }
 
-h1 { text-align: center; }
+h1 {
+color: black;
+text-align: center;
+text-shadow: 1px 0 #fff, -1px 0 #fff, 0 1px #fff, 0 -1px #fff, 1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+}
 
 #navbar { background-color: lightblue; }
 
 #chessGame
 {
 	width: 100% !important;
-}
-
-#myBoard
-{
-	width: 95% !important;
-	margin-left: auto;
-  margin-right: auto;
-margin-top: 10px; margin-bottom: 10px;
 }
 
  #singlePlayer, #multiPlayer, #joinButton, #cm-chessboard
