@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Bind</title>
+</head>
+<body>
+<label>Number
+<input type="text" class="number"/>
+</label>
+<div class="number"></div>
+<select class="number">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+</select>
+
+<script type="module">
+    import {Bind} from "../../node_modules/bind.mjs/src/bind.mjs/Bind.js"
+    Bind({
+        number: 3
+    }, {
+        number: ".number"
+    });
+</script>
+</body>
+</html>

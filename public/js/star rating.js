@@ -3,7 +3,6 @@ window.addEventListener("DOMContentLoaded",() => {
 });
 
 var star_rating=0
-const footer= document.getElementById('footer')
 
 class StarRating {
 	constructor(qs) {

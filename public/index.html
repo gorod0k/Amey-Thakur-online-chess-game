@@ -4,7 +4,13 @@
 <head>
     <title> Online Chess </title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0"/>
+
+  <!-- cm-chessboard styles -->
+    <link rel="stylesheet" href="./examples/styles/examples.css"/>
+    <link rel="stylesheet" href="./assets/chessboard.css"/>
+    <link rel="stylesheet" href="./assets/extensions/markers/markers.css"/>
+    <link rel="stylesheet" href="./assets/extensions/promotion-dialog/promotion-dialog.css"/>
     
     <link rel="icon" href="./img/icon.jpg">
     <link rel="stylesheet" type="text/css" href="./css/semantic.min.css">
@@ -12,13 +18,35 @@
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="stylesheet" href="./css/star rating.css">
     
-    <script src="https://telegram.org/js/telegram-web-app.js">
-        // https://github.com/riobits/Telegram-Web-API-Cheatsheet
-    </script>
+    <style> /* HTML layer */
+        /*noinspection CssUnusedSymbol*/
+        #cm-board .html-layer {
+            background-color: rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+        }
+        #cm-board .html-layer div {
+            position: absolute;
+            top: 30%;
+            left: 1rem;
+            right: 1rem;
+            height: 3.2em;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            font-size: 3em;
+            line-height: 1em;
+            border-radius: 0.5rem;
+            text-align: center;
+            text-shadow: 1px 0 #fff, -1px 0 #fff, 0 1px #fff, 0 -1px #fff,
+             1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+             
+        }
+    </style>
+    
     
 </head>
 
 <body>
+
     <audio id="myAudio">
         <source src="./mp3/soundMove.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
@@ -30,25 +58,24 @@
     
     <!-- Navbar -->
     <div>
-        <div style="margin: 0; border-bottom: 4px solid gray; padding: 3px 0; " class="ui secondary menu">
-        	
-            <img src="./img/icon.png" style="width:80px;height:80px;">
+        <div style="margin: 0; padding: 3px 0; " class="ui secondary menu" id="navbar">
+            <img src="./img/icon.png" style="width: 5em; height: 5em;">
             
             <div class="right menu">
-                <div style="margin-top:20px; height: 40px; padding-right: 20px; margin-right: 15px;"
+                <div style="margin-top:20px; height: 40px; margin-right: .5em;"
                     class="ui labeled button" tabindex="0">
                     <div class="ui button">
-                        <i class="user icon"></i> #PLAYERS
+                        👤 #GAMERS
                     </div>
                     <a class="ui basic label">
                         <span id="players">0</span>
                     </a>
                 </div>
 
-                <div style="margin-top:20px; height: 40px; padding-left: 20px;  margin-right: 15px;"
+                <div style="margin-top:20px; margin-right: .5em; height: 40px; "
                     class="ui labeled button" tabindex="0">
                     <div class="ui button">
-                        <i class="star icon"></i> #ROOMS
+                        🏆 #ROOMS
                     </div>
                     <a class="ui basic label">
                         <span id="rooms">0</span>
@@ -57,11 +84,10 @@
             </div>
         </div>
     </div>
-    
-       <h1 id="userinfo"></h1>
 
     <div>
         <div id="gameMode">
+        	<h1 id="userinfo"></h1>
             <h1> GAME MODE</h1>
             
             <div style="text-align:center;">
@@ -69,180 +95,32 @@
             </div>
             
             <div style="text-align:center;">
-                <button class="game ui black button " id="multiPlayer"> MULTI PLAYER</button>
-            </div>
-            
-            <div style="text-align:center;">
-                <button class="game ui black button " id="cm-chessboard" onclick="location.href='/examples/validate-moves.html'"> NEW • STYLE • BOARD </button>
+                <button class="game ui black button " id="multiPlayer" > MULTI PLAYER</button>
             </div>
             
             <hr>
+            	
+<!--———————————————————————-->
             
 <!-- partial:index.partial.html -->
-<form class="rating">
-	<div class="rating__stars">
-		<input id="rating-1" class="rating__input rating__input-1" type="radio" name="rating" value="1">
-		<input id="rating-2" class="rating__input rating__input-2" type="radio" name="rating" value="2">
-		<input id="rating-3" class="rating__input rating__input-3" type="radio" name="rating" value="3">
-		<input id="rating-4" class="rating__input rating__input-4" type="radio" name="rating" value="4">
-		<input id="rating-5" class="rating__input rating__input-5" type="radio" name="rating" value="5">
-		<label class="rating__label" for="rating-1">
-			<svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
-				<g transform="translate(16,16)">
-					<circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
-				</g>
-				<g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<g transform="translate(16,16) rotate(180)">
-						<polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
-						<polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
-					</g>
-					<g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
-						<polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
-					</g>
-				</g>
-			</svg>
-			<span class="rating__sr">1 star—Zombie</span>
-		</label>
-		<label class="rating__label" for="rating-2">
-			<svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
-				<g transform="translate(16,16)">
-					<circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
-				</g>
-				<g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<g transform="translate(16,16) rotate(180)">
-						<polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
-						<polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
-					</g>
-					<g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
-						<polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
-					</g>
-				</g>
-			</svg>
-			<span class="rating__sr">2 stars—Scull</span>
-		</label>
-		<label class="rating__label" for="rating-3">
-			<svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
-				<g transform="translate(16,16)">
-					<circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
-				</g>
-				<g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<g transform="translate(16,16) rotate(180)">
-						<polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
-						<polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
-					</g>
-					<g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
-						<polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
-					</g>
-				</g>
-			</svg>
-			<span class="rating__sr">3 stars—OK</span>
-		</label>
-		<label class="rating__label" for="rating-4">
-			<svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
-				<g transform="translate(16,16)">
-					<circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
-				</g>
-				<g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<g transform="translate(16,16) rotate(180)">
-						<polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
-						<polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
-					</g>
-					<g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
-						<polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
-					</g>
-				</g>
-			</svg>
-			<span class="rating__sr">4 stars—Good</span>
-		</label>
-		<label class="rating__label" for="rating-5">
-			<svg class="rating__star" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
-				<g transform="translate(16,16)">
-					<circle class="rating__star-ring" fill="none" stroke="#000" stroke-width="16" r="8" transform="scale(0)" />
-				</g>
-				<g stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<g transform="translate(16,16) rotate(180)">
-						<polygon class="rating__star-stroke" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="none" />
-						<polygon class="rating__star-fill" points="0,15 4.41,6.07 14.27,4.64 7.13,-2.32 8.82,-12.14 0,-7.5 -8.82,-12.14 -7.13,-2.32 -14.27,4.64 -4.41,6.07" fill="#000" />
-					</g>
-					<g transform="translate(16,16)" stroke-dasharray="12 12" stroke-dashoffset="12">
-						<polyline class="rating__star-line" transform="rotate(0)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(72)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(144)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(216)" points="0 4,0 16" />
-						<polyline class="rating__star-line" transform="rotate(288)" points="0 4,0 16" />
-					</g>
-				</g>
-			</svg>
-			<span class="rating__sr">5 stars—Excellent</span>
-		</label>
-		<p class="rating__display" data-rating="1" hidden>Zombie</p>
-		<p class="rating__display" data-rating="2" hidden>Scull</p>
-		<p class="rating__display" data-rating="3" hidden>Demon</p>
-		<p class="rating__display" data-rating="4" hidden>Vampire</p>
-		<p class="rating__display" data-rating="5" hidden>Dracula</p>
-	</div>
+<form class="rating" id="stars">
 </form>
 <!-- partial -->
             
         </div>
+        
+<!--———————————————————————-->
 
-        <div id="joinFormDiv" style="display: none;">
-            <form id="joinForm">
-                <h1 style="text-align: center; margin: 10px; font-size: 35px;">START GAME</h1>
-                <div style="text-align:center;">
-                    <input class="formInput" type="text" placeholder="Name" style="padding: 10px;">
-                </div>
-                <div style="text-align:center;">
-                    <input class="formInput" type="text" placeholder="Room" style="padding: 10px;">
-                </div>
-                <div id="roomDropdownP" style="text-align:center;  height: 50px; margin: 10px; padding: 0 4px; ">
-                    <div id="roomDropdown" class="ui fluid search selection dropdown"
-                        style="border: 1px solid gray; width: 300px; margin:auto;">
-                        <input type="hidden" name="country">
-                        <i class="dropdown icon"></i>
-                        <div class="default text">SELECT ROOM</div>
-                        <div class="menu" id="dropRooms">
-                            <!-- <div class="item" data-value="af"><i class="icon star"></i>Afghanistan</div>
-                            <div class="item" data-value="ar"><i class="icon star"></i>Argentina</div> -->
-                        </div>
-                    </div>
-                </div>
-                <div style="text-align:center;">
-                    <button class="game ui black button " id="joinButton">JOIN</button>
-                </div>
-                <div style="text-align:center;">
-                    <p id="message"></p>
-                </div>
-            </form>
-        </div>
-
-        <!-- /Input Form -->
         <div>
             <!-- Chess Board -->
             <div id="chessGame" style="display: none;">
-                <!-- Color Schemes -->
+                <!-- Color Schemes --
                 <div style="text-align: center; margin: 5px;">
                     <button id="grey_board"> GREY </button>
                     <button id="orange_board"> ORANGE</button>
                     <button id="green_board">GREEN</button>
                     <button id="blue_board">BLUE</button>
-                </div>
+                </div> -->
                 
                 <!-- Status and PGN -->
                 <div id="statusPGN" style="text-align: center; display: none;">
@@ -260,15 +138,47 @@
                     </div>
                 </div>
                 
-                <div id="myBoard"></div>
+                <div id="cm-board"></div>
                 
                 <div style="text-align: center; margin-bottom: 20px;">
-                    <a href="/" class="ui button" style="width: 95%;">LEAVE GAME</a>
+                    <a href="/" id="leave" class="ui button" >LEAVE GAME</a>
                 </div>
 
             </div>
         </div>
     </div>
+    
+<!--———————————————————————-->
+<!--——— room join form ——————————-->
+        <div id="joinFormDiv" style="display: none;">
+            <form id="joinForm">
+                <h1 style="text-align: center; margin: 10px; font-size: 35px;">START GAME</h1>
+                <div style="text-align:center;">
+                    <input class="formInput" type="text" id="join-user" placeholder="Name" value="test" style="padding: 10px;">
+                </div>
+
+                <div style="text-align:center;">
+                    <input class="formInput" type="text" id="join-room" placeholder="Room" value="test" style="padding: 10px;">
+                </div>
+                <div id="roomDropdownP" style="text-align:center;  height: 50px; margin: 10px; padding: 0 4px; ">
+                    <div id="roomDropdown" class="ui fluid search selection dropdown"
+                        style="border: 1px solid gray; width: 300px; margin:auto;">
+                        <input type="hidden" name="country">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">SELECT ROOM</div>
+                        <div class="menu" id="dropRooms">
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align:center;">
+                    <button class="game ui black button " id="joinButton">JOIN</button>
+                </div>
+                <div style="text-align:center;">
+                    <p id="message"></p>
+                </div>
+            </form>
+        </div> <!-- /Input Form -->
+<!--———————————————————————-->
 
     <!-- Chatting window -->
     <div id="chat"
@@ -292,34 +202,432 @@
         </div>
     </div>
     
-    <div id="footer"
-        style="background-color: black; color: white; margin-top:auto; padding: 15px; text-align: center; font-size: 15px;">
-           
+<!--    <button style="margin-bottom: 10px"
+        onclick="window.cm_board.setOrientation(window.cm_board.getOrientation() === 'w' ? 'b' : 'w')">Switch Orientation
+</button> -->
+    
+    <div id="footer">
         Version: <span id="ver"></span>,
         platform: <span id="platform"></span>
-
 </div>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="application/javascript">
+//$('body').load("main.html")
+$("#stars").load("stars.html")
+</script>
+	
+<!--——————— cm-chessboard ——————-->
+<script type="module">
+
+// можно оставить на клиенте для single play или перенести на сервер для единообразия?
+    import {Chess} from "https://cdn.jsdelivr.net/npm/chess.mjs@1/src/chess.mjs/Chess.js"
+// "https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.js"
+// сейчас используется только для проверки ходов. попробовать перекинуть на серверную часть, see onDrop2 func 
+const chess = new Chess()
+
+import {INPUT_EVENT_TYPE, FEN, COLOR, Chessboard, BORDER_TYPE} from "./src/Chessboard.js" // cm-chessboard
+    import {HtmlLayer} from "./src/extensions/html-layer/HtmlLayer.js"
+    import {MARKER_TYPE, Markers} from "./src/extensions/markers/Markers.js"
+    import {PROMOTION_DIALOG_RESULT_TYPE, PromotionDialog} from "./src/extensions/promotion-dialog/PromotionDialog.js"
+    import {Accessibility} from "./src/extensions/accessibility/Accessibility.js"
+var cm_board = null
+var layer = null // cm_board html layer
+const cm_board_default_config =
+{
+        position: FEN.start, // FEN.empty, // set position as fen, use FEN.start or FEN.empty as shortcuts
+        orientation: COLOR.white, // white on bottom
+        responsive: true, // resize the board automatically to the size of the context element
+        assetsUrl: "./assets/", // put all css and sprites in this folder, will be ignored for absolute urls of assets files
+        assetsCache: true, // cache the sprites, deactivate if you want to use multiple pieces sets in one page
+        style: {
+        	cssClass: "default", // set the css theme of the board, try "green", "blue" or "chess-club"
+        	showCoordinates: true, // show ranks and files
+borderType: "frame", // "thin" thin border, "frame" wide border with coordinates in it, "none" no border
+// aspectRatio: 1, // height/width of the board
+pieces: {
+//type: PIECES_FILE_TYPE.svgSprite, // pieces are in an SVG sprite, no other type supported for now
+file: "pieces/staunty.svg"}, // the filename of the sprite in `assets/pieces/`
+// tileSize: 40 // the tile size in the sprite
+animationDuration: 300 // pieces animation duration in milliseconds. Disable all animations with `0`
+},
+        extensions: [
+            { class: Markers, props: {autoMarkers: MARKER_TYPE.frame} },
+            {class: PromotionDialog},
+            {class: Accessibility, props: {visuallyHidden: true}},
+            {class: HtmlLayer},
+        ]
+} // default cm_board configuration
+
+import { io } from "https://cdn.socket.io/4.3.0/socket.io.esm.min.js";
+const socket = io();
+
+let seed = 71;
+function random()
+{
+        const x = Math.sin(seed++) * 10000;
+        return x - Math.floor(x);
+    }
+    
+function makeEngineMove(chessboard)
+{
+        const possibleMoves = chess.moves({verbose: true})
+        if (possibleMoves.length > 0) {
+            const randomIndex = Math.floor(random() * possibleMoves.length)
+            const randomMove = possibleMoves[randomIndex]
+            setTimeout(() => { // smoother with 500ms delay
+                chess.move({from: randomMove.from, to: randomMove.to})
+                chessboard.setPosition(chess.fen(), true)
+                chessboard.enableMoveInput(inputHandler, COLOR.white)
+            }, 500)
+        }
+}
+
+// see https://github.com/shaack/cm-chessboard#enablemoveinputeventhandler-color--undefined
+function inputHandler(event)
+{
+        console.log("inputHandler", event)
+        if(event.type === INPUT_EVENT_TYPE.movingOverSquare)
+{
+            return // ignore this event
+        } // movingOverSquare
         
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
-        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+        if(event.type !== INPUT_EVENT_TYPE.moveInputFinished)
+{
+            event.chessboard.removeLegalMovesMarkers()
+        } // moveInputFinished
+        
+        // User started the move input, event.squareFrom contains the coordinates. Return true or false to validate the start square. false cancels the move
+        if (event.type === INPUT_EVENT_TYPE.moveInputStarted)
+{
+            // mark legal moves
+            const moves = chess.moves({square: event.squareFrom, verbose: true})
+            event.chessboard.addLegalMovesMarkers(moves)
+            console.log('LegalMoves: ', moves)
+            return moves.length > 0
+        } // moveInputStarted
+else
+// To validate the users move input. event.squareFrom and event.squareTo contain the coordinates. Return true or false to validate the move. false cancels the move.
+if (event.type === INPUT_EVENT_TYPE.validateMoveInput)
+{
+            const move = {from: event.squareFrom, to: event.squareTo, promotion: event.promotion}
+            
+     const result = chess.move(move)
+// заменить на game.
+            if (result)
+{
+                event.chessboard.state.moveInputProcess.then(() => { // wait for the move input process has finished
+                    event.chessboard.setPosition(chess.fen(), true).then(() => { // update position, maybe castled and wait for animation has finished
+                    
+if (game_mode=='single')
+             makeEngineMove(event.chessboard)
+else
+// multiplayer move handler
+{
+	//emits event after piece is dropped
+    const room = formEl[1].value;
+    myAudioEl.play();
+    //console.log(room, ':', move)
+    chess.move({from: move.from, to: move.to})
+    socket.emit('Dropped', move, room )
+}
+                    })
+                })
+            }
+else
+{
+                // promotion?
+                let possibleMoves = chess.moves({square: event.squareFrom, verbose: true})
+                for (const possibleMove of possibleMoves) {
+                    if (possibleMove.promotion && possibleMove.to === event.squareTo) {
+                        event.chessboard.showPromotionDialog(event.squareTo, COLOR.white, (result) =>
+{
+                            console.log("promotion result", result)
+                            if (result.type === PROMOTION_DIALOG_RESULT_TYPE.pieceSelected) {
+                                chess.move({from: event.squareFrom, to: event.squareTo, promotion: result.piece.charAt(1)})
+                                event.chessboard.setPosition(chess.fen(), true)
+ /* !!!!!!!!! !!! !!! !!! !!! исправить  !!!!!! !!! !!! !!! !!!  */                        makeEngineMove(event.chessboard)
+                            }
+else
+{
+//????????? это что   // promotion canceled
+                          event.chessboard.enableMoveInput(inputHandler, COLOR.white)
+                                event.chessboard.setPosition(chess.fen(), true)
+                            }
+                        })
+                        return true // false cancels move
+                    }
+                }
+            }
+            
+            return result
+        }
+else
+// Fired after the move was made, also when canceled
+if (event.type === INPUT_EVENT_TYPE.moveInputFinished)
+{
+    if(event.legalMove);
+     //   event.chessboard.disableMoveInput()
+} // moveInputFinished
+
+}
+
+function set_start_position(piece_color)
+{
+	var start_pos = FEN.start
+	
+	switch(star_rating.id)
+{
+  case 1: start_pos='4k3/2pppp2/8/8/8/8/2PPPP2/4K3  w - - 0 1'; break;
+  case 2: start_pos='4k3/pppppppp/8/8/8/8/PPPPPPPP/4K3  w - - 0 1'; break;
+case 3: start_pos='2b1kb2/pppppppp/8/8/8/8/PPPPPPPP/2B1KB2  w - - 0 1'; break;
+case 4: start_pos='1nb1kbn1/pppppppp/8/8/8/8/PPPPPPPP/1NB1KBN1  w - - 0 1'; break;
+case 5: start_pos='rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNB1KBNR  w - - 0 1'; break;
+  default:
+}
+
+/*
+// on the server side:
+// only for white pieces 
+if (piece_color==COLOR.white)
+    socket.emit('SetStartPos', start_pos)
+*/
+    return start_pos
+}
+
+// move this on the server side
+var game_mode=null // single- or multiplayer 
+
+singlePlayerEl.addEventListener('click', (event) => 
+{
+	game_mode= 'single'
+	
+    event.preventDefault();
+    document.getElementById('gameMode').style.display = "none";
+    document.querySelector('#chessGame').style.display = null;
+    
+    cm_board = new Chessboard( document.getElementById("cm-board"), cm_board_default_config )
+    
+cm_board.enableMoveInput(inputHandler, COLOR.white)
+msg_html_layer('Welcome!')
+
+})
+
+//—————————————————————————
+// multiPlayer
+//multiPlayerEl.addEventListener('click', (e) =>
+$('#multiPlayer').on( "click", function(event)
+{
+	game_mode= 'multi'
+	
+    event.preventDefault();
+    document.getElementById('joinFormDiv').style.display = "block";
+    document.getElementById('gameMode').style.display = "none";
+}) // multiPlayerEl.addEventListener('click'
+
+//Connect clients only after they click Join
+//joinButtonEl.addEventListener('click', (e) =>
+$('#joinButton').on( "click", function(event)
+{
+    event.preventDefault()
+
+// tmp for debugging 
+formEl[0].value= socket.id
+//formEl[1].value=
+
+    var user = formEl[0].value,
+room = formEl[1].value
+
+    if (!user || !room)
+{
+        messageEl.textContent = "Input fields can't be empty!"
+    }
+    else {
+        $('#joinButton').attr("disabled", "disabled");
+        formEl[0].setAttribute("disabled", "disabled")
+        document.querySelector('#roomDropdownP').style.display = 'none';
+        formEl[1].setAttribute("disabled", "disabled")
+        
+        var start_pos = set_start_position('' /* no using*/)
+        
+        //Now Let's try to join it in room // If users more than 2 we will 
+        socket.emit('joinRoom', { user, room, start_pos }, (error) => {
+            messageEl.textContent = error
+            if (alert(error)) {
+                window.location.reload()
+            }
+            else    //to reload even if negative confirmation
+                window.location.reload();
+        })
+        messageEl.textContent = "Waiting for other player to join"
+    }
+    
+}) // joinButton.on click
+
+//—————————————————————————
+
+
+function msg_html_layer(msg)
+{
+  //     if(!layer)
+{
+           layer = cm_board.addHtmlLayer('<div>'+msg+'</div>')
+           layer.addEventListener("click", () =>
+{
+               if(layer)
+{
+            cm_board.removeHtmlLayer(layer)
+            layer = null
+        }
+           })
+       }
+}
+
+//—————————————————————————
+
+//Catch Display event (when creating the game and when game.move on server)
+socket.on('InitBoard', (fenString, userId, pgn) => 
+{
+    console.log(fenString)
+    //This is to be done initially only
+    if (userId != undefined)
+{
+        console.log ('socket.on(Init Board) [socket id: ', socket.id,  ' / user id: ', userId)
+
+// black or white:
+var piece_color= COLOR.white
+if (socket.id == userId)
+	piece_color= COLOR.black
+
+// chessboard custom configuration:
+var cm_board_config = cm_board_default_config
+// argument - for set server game start pos only if white pieces 
+cm_board_config.position = fenString //set_start_position(piece_color)
+cm_board_config.orientation = piece_color
+
+//Server will create a game and clients will play it; Clients just have to display the game
+cm_board = new Chessboard( document.getElementById("cm-board"), cm_board_config )
+
+// set custom figure position
+try { chess.load( fenString ) }
+    catch (err) { console.log(err) }
+    
+cm_board.enableMoveInput(inputHandler, piece_color)
+msg_html_layer('Match Started! Best of Luck')
+
+        document.getElementById('joinFormDiv').style.display = "none";
+        document.querySelector('#chessGame').style.display = null
+        ChatEl.style.display = null
+        document.getElementById('statusPGN').style.display = null
+    }
+
+    document.getElementById('pgn').textContent = pgn
+}) // socket.on DisplayBoard
+
+
+
+socket.on('UpdateBoard', (id, fenString) => 
+{
+	console.log('socket.on UpdateBoard \n game: ', fenString, '\n chess: ', chess.fen() )
+
+	// update both of clients chess! 
+	// move this to server in future!
+	if (socket.id != id)
+	{
+	chess.load(fenString)
+	cm_board.setPosition(fenString)
+	}
+})
+
+
+
+//To turn off dragging
+socket.on('Dragging', (id, turn_color) =>
+{
+    if (socket.id != id)
+    {
+// add try ex here:
+   cm_board.enableMoveInput(inputHandler, turn_color)
+    }
+    else cm_board.disableMoveInput()
+})
+
+
+</script>
+
+    <!-- telegram API -->
+    <script src="https://telegram.org/js/telegram-web-app.js">
+        // https://github.com/riobits/Telegram-Web-API-Cheatsheet
+    </script>
+    <!-- debug console -->
+    <script src="https://cdn.jsdelivr.net/gh/c-kick/mobileConsole/hnl.mobileconsole.min.js"></script>
     <script src="./js/semantic.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="./js/chessboard-1.0.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.js"
-        crossorigin="anonymous"></script>
+    <script src="client.js"></script>
     <script  src="./js/star rating.js"></script>
-    <script src="./js/app.js"></script>
-    
-</body>
 
 <script type="application/javascript">
+//—————————————————————————
 
+//If in check
+socket.on('inCheck', turn => {
+    if (cm_board.getOrientation().includes(turn))
+{ statusEl.textContent = "You are in Check!!" }
+    else {
+        statusEl.textContent = "Opponent is in Check!!"
+    }
+})
+
+//If win or draw
+socket.on('gameOver', (turn, win) => 
+{
+    cm_board.disableMoveInput()
+    
+    if (win) {
+        if (board.orientation().includes(turn)) {
+            msg_html_layer('You lost, better luck next time :) ')
+        }
+        else {
+            msg_html_layer('Congratulations, you won!')
+        }
+    }
+    else {
+        msg_html_layer('Game Draw')
+    }
+})
+
+//—————————————————————————
+
+// initializing semantic UI dropdown
+$('.ui.dropdown')
+    .dropdown();
+
+// function for defining onchange on dropdown menus
+$("#roomDropdown").dropdown({
+    onChange: function (val) {
+        console.log(val)
+        console.log('running the function')
+        formEl[1].value = val
+    }
+});
+
+//—————————————————————————
+// little telegram stuff
+ 
 let tg = window.Telegram.WebApp; //получаем объект webapp телеграма 
 
 tg.expand(); //расширяем на все окно  
+// для использования вне тг отлавливаем соотв. ошибки:
+try {
+var tg_lang = tg.initDataUnsafe.user.language_code
+var tg_username = tg.initDataUnsafe.user.first_name + ' ' + tg.initDataUnsafe.user.last_name
+var tg_user = tg.initDataUnsafe.user.username
+} catch(err) {}
 
-document.getElementById('ver').innerHTML      = tg.version;
-document.getElementById('platform').innerHTML = tg.platform, ' ', tg.initDataUnsafe.user.language_code
+//document.getElementById('ver')
+$('#ver').html ( tg.version )
+//document.getElementById('platform').
+$('#platform').html ( tg.platform, ' ', tg_lang )
 /*
 // MainButton текст и цвет
 tg.MainButton.text = "Changed Text"; //изменяем текст кнопки 
@@ -329,6 +637,7 @@ tg.MainButton.text = "Changed Text"; //изменяем текст кнопки
    tg.MainButton.setParams({"color": "#143F6B"}); //так изменяются все параметры
 */
 
-document.getElementById('userinfo').innerHTML = `Hello, ${tg.initDataUnsafe.user.first_name} ${tg.initDataUnsafe.user.last_name} (${tg.initDataUnsafe.user.username}) `;
+//document.getElementById('userinfo').
+$('#userinfo').html (`Hello, ${tg_username} (${tg_user}) `)
 
 </script>

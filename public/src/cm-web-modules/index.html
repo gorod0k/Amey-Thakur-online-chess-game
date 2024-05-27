@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo</title>
+</head>
+<body>
+<h1>cm-web-modules</h1>
+<h2>Stopwatch example</h2>
+<p>
+    seconds: <span id="seconds-output">0</span><br/>
+    clock: <span id="clock-output">0</span><br/>
+    running: <span id="state-output">false</span>
+</p>
+<p>
+    <button id="button-start">Start</button>
+    <button id="button-stop">Stop</button>
+    <button id="button-reset">Reset</button>
+</p>
+<p id="debug-output">
+
+</p>
+<h2>Testing</h2>
+<a href="test/index.html">Run tests</a>
+<script type="module">
+    import {Stopwatch} from "./src/stopwatch/Stopwatch.js"
+    import {TextUtils} from "./src/utils/TextUtils.js"
+
+    const secondsOutput = document.getElementById("seconds-output")
+    const clockOutput = document.getElementById("clock-output")
+    const stateOutput = document.getElementById("state-output")
+    const debugOutput = document.getElementById("debug-output")
+    const stopwatch = new Stopwatch({
+        tickResolution: 10,
+        onStateChanged: (running) => {
+            stateOutput.innerText = running
+            debugInfo()
+        },
+        onTimeChanged: (seconds) => {
+            secondsOutput.innerText = seconds.toFixed(2)
+            clockOutput.innerText = TextUtils.formatTime(seconds * 1000, 1)
+            debugInfo()
+        }
+    })
+    function debugInfo() {
+        debugOutput.innerHTML = `
+        startDate: ${stopwatch.startDate}<br/>
+        endDate: ${stopwatch.endDate}<br/>
+        dateAtLatestStart: ${stopwatch.dateAtLatestStart}<br/>
+        secondsExpiredTillLastPause: ${stopwatch.secondsExpiredTillLastPause}<br/>
+        secondsExpiredSinceLastStart: ${stopwatch.secondsExpiredSinceLastStart}
+        `
+    }
+    document.getElementById("button-start").addEventListener("click", () => {
+        stopwatch.start()
+    })
+    document.getElementById("button-stop").addEventListener("click", () => {
+        stopwatch.stop()
+    })
+    document.getElementById("button-reset").addEventListener("click", () => {
+        stopwatch.reset()
+    })
+</script>
+</body>
+</html>

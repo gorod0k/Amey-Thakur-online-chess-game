@@ -3,7 +3,9 @@ const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
 
-var Chess = require('chess.js').Chess;
+// be carefully: v.0.10 and 1.0 have many differences!
+const Chess = require('chess.js').Chess;
+// API here: https://unpkg.com/browse/chess.js@1.0.0-beta.8/README.md
 
 const app = express()
 const server = http.createServer(app)
@@ -24,23 +26,35 @@ let totalUsers = 0;
 //Getting a connection
 io.on('connection', (socket) =>
 {
+	console.log("socket.io: User connected: ", socket.id);
+
     totalUsers++;
     // console.log(totalUsers)
+    // console.log(roomsList)
     //To render rooms list initially
     io.emit('roomsList', Array.from(roomsList));
     io.emit('updateTotalUsers', totalUsers)
-    const updateStatus = (game, room) => {
+    
+    const updateStatus = (game, room) =>
+{
         // checkmate?
-        if (game.in_checkmate()) {
+        /*
+const possibleMoves = game.moves();
+if ( game.isGameOver() )
+{
+if ( game.isDraw() ) ...
+if (possibleMoves.length === 0) ...
+} */
+        if (game.isCheckmate()) {
             io.to(room).emit('gameOver', game.turn(), true)
         }
         // draw? 
-        else if (game.in_draw()) {
+        else if (game.isDraw()) {
             io.to(room).emit('gameOver', game.turn(), false)
         }
         // game still on
         else {
-            if (game.in_check()) {
+            if (game.inCheck()) {
                 io.to(room).emit('inCheck', game.turn())
             }
             else
@@ -48,29 +62,31 @@ io.on('connection', (socket) =>
                 io.to(room).emit('updateStatus', game.turn())
             }
         }
-    }
+} // updateStatus
 
-    //Creating and joining the room
-    socket.on('joinRoom', ({ user, room }, callback) => {
+//Creating and joining the room
+socket.on('joinRoom', ({ user, room, start_pos }, callback) =>
+{
+	console.log('Join room / user: ', user, ', room: ' , room);
+	
         //We have to limit the number of users in a room to be just 2
-// ! здесь на локалке сервис падает !
-        if (io.nsps['/'].adapter.rooms[room] && io.nsps['/'].adapter.rooms[room].length === 2) {
+if (io.sockets.adapter.rooms.get(room) )
+if (io.sockets.adapter.rooms.get(room).size ===2 )
             return callback('Already 2 users are there in the room!')
-        }
 
         var alreadyPresent = false
         for (var x in userData) {
+console.log(userData[x]);
             if (userData[x].user == user && userData[x].room == room) {
                 alreadyPresent = true
             }
         }
-        
-console.log(userData);
+
         //If same name user already present
         if (alreadyPresent) {
             return callback('Choose different name!')
         }
-
+        
         socket.join(room)
         //Rooms List Update
         roomsList.add(room);
@@ -81,62 +97,89 @@ console.log(userData);
             room, user,
             id: socket.id
         }
-
-        //If two users are in the same room, we can start
-       if (io.nsps['/'].adapter.rooms[room].length === 2) {
+        
+        console.log( io.sockets.adapter.rooms.get(room) , ' : ', io.sockets.adapter.rooms.get(room).size)
+        
+// If two users are in the same room, we can start
+if (io.sockets.adapter.rooms.get(room).size ===2 )
+{
             //Rooms List Delete
             roomsList.delete(room);
             io.emit('roomsList', Array.from(roomsList));
             totalRooms = roomsList.length
             io.emit('totalRooms', totalRooms)
+            
             var game = new Chess()
-            //For getting ids of the clients
-            for (var x in io.nsps['/'].adapter.rooms[room].sockets) {
-                gameData[x] = game
-            }
+game.load(start_pos)
+            // getting ids of the clients
+            // Set room(socket.id : game)
+            io.sockets.adapter.rooms.get(room).forEach( (value) =>
+{ gameData.set( value, game ) });
             //For giving turns one by one
-            io.to(room).emit('Dragging', socket.id)
-            io.to(room).emit('DisplayBoard', game.fen(), socket.id, game.pgn())
+    //        io.to(room).emit('Dragging', socket.id)
+
+            io.to(room).emit('InitBoard', game.fen(), socket.id, game.pgn())
             updateStatus(game, room)
         }
-    })
+}) // socket.on('joinRoom'
 
-    //For catching dropped event
-    socket.on('Dropped', ({ source, target, room }) =>
+/*
+socket.on('SetStartPos', ( FEN_pos ) =>
 {
-        var game = gameData[socket.id]
-        var move = game.move({
-            from: source,
-            to: target,
-            promotion: 'q' // NOTE: always promote to a queen for example simplicity
-        })
+	var game = gameData.get(socket.id)
+	//console.log('socket.on SetStartPos: ', socket.id, ' / ', FEN_pos, ' / ', game)
+	game.load(FEN_pos)
+	console.log( game.fen() )
+})
+*/
+
+//For catching dropped event
+socket.on('Dropped', (move, room) =>
+{
+      var game = gameData.get(socket.id) // gameData[socket.id]
+//console.log('gameData: ', [...gameData.entries()])
+
+// добавить обработчик ошибочных ходов! иначе сервер падает с ошибкой
+        var result= game.move({ from: move.from, to: move.to, promotion: move.promotion })
+        console.log('Room: ', room, ' : res ', result)
         // If correct move, then toggle the turns
-        if (move != null) {
-            io.to(room).emit('Dragging', socket.id)
-        }
-        io.to(room).emit('DisplayBoard', game.fen(), undefined, game.pgn())
+        
+if (result != null)
+io.to(room).emit('Dragging', socket.id, game.turn() )
+
+// update boards position:
+console.log('socket emit UpdateBoard: ', room, ' / ', game.fen() )
+io.to(room).emit( 'UpdateBoard', socket.id, game.fen() )
+
         updateStatus(game, room)
-        // io.to(room).emit('printing', game.fen())
-    })
+        io.to(room).emit('printing', game.fen())
+}) // socket.on Dropped
 
-    //Catching message event
-    socket.on('sendMessage', ({ user, room, message }) => {
-        io.to(room).emit('receiveMessage', user, message)
-    })
 
-    //Disconnected
-    socket.on('disconnect', () =>
+
+//Catching message event
+socket.on('sendMessage', ({ user, room, message }) =>
+{ io.to(room).emit('receiveMessage', user, message) })
+   
+   
+   
+//Disconnected
+socket.on('disconnect', () =>
 {
+	console.log("socket.io: User disconnected: ", socket.id);
+	
         totalUsers--;
         io.emit('updateTotalUsers', totalUsers)
         var room = '', user = '';
-        for (var x in userData) {
+        for (var x in userData)
+{
             if (userData[x].id == socket.id) {
                 room = userData[x].room
                 user = userData[x].user
                 delete userData[x]
             }
-        }
+       }
+
         //Rooms Removed
         if (userData[room] == null) {
             //Rooms List Delete

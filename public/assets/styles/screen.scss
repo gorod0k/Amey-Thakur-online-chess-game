@@ -1,0 +1,13 @@
+@import "config";
+@import "chess-console";
+@import "../../node_modules/cm-chessboard/assets/chessboard.scss";
+@import "../../node_modules/cm-chessboard/assets/extensions/promotion-dialog/promotion-dialog.scss";
+@import "markers";
+
+html {
+  body {
+    .container-fluid {
+      max-width: 1200px;
+    }
+  }
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tests</title>
+    <style>
+        :root {
+            --dom-utils-test-var: #777;
+            --body-bg: #eee;
+        }
+        body {
+            background-color: var(--body-bg);
+        }
+    </style>
+</head>
+<body>
+<template id="myTemplate">${greeting} <b>${who}</b>!</template>
+<script type="module">
+    import {teevi} from "../node_modules/teevi/src/teevi.js"
+
+    import "./TestCache.js"
+    import "./TestColorUtils.js"
+    import "./TestCookie.js"
+    import "./TestDomUtils.js"
+    import "./TestEncryptionUtils.js"
+    import "./TestMessageBroker.js"
+    import "./TestObserve.js"
+    import "./TestObserved.js"
+    import "./TestPromiseQueue.js"
+    import "./TestTemplate.js"
+    import "./TestTextUtils.js"
+    teevi.run()
+</script>
+</body>
+</html>
