@@ -286,7 +286,8 @@ function random()
 function makeEngineMove(chessboard)
 {
         const possibleMoves = chess.moves({verbose: true})
-        if (possibleMoves.length > 0) {
+        if (possibleMoves.length > 0)
+{
             const randomIndex = Math.floor(random() * possibleMoves.length)
             const randomMove = possibleMoves[randomIndex]
             setTimeout(() => { // smoother with 500ms delay
@@ -295,6 +296,12 @@ function makeEngineMove(chessboard)
                 chessboard.enableMoveInput(inputHandler, COLOR.white)
             }, 500)
         }
+        else
+        {
+        	msg_html_layer('Game over!')
+    setTimeout(function ()
+{ window.location.href = '/' }, 3000)
+        	}
 }
 
 // see https://github.com/shaack/cm-chessboard#enablemoveinputeventhandler-color--undefined
