@@ -1,29 +1,5 @@
-const formEl = document.querySelectorAll('#joinForm > div > input')
-const messageEl = document.querySelector('#message')
-const statusEl = document.querySelector('#status')
-const ChatEl = document.querySelector('#chat')
-const sendButtonEl = document.querySelector('#send')
-const roomsListEl = document.getElementById('roomsList');
-const myAudioEl = document.getElementById('myAudio');
-const singlePlayerEl = document.getElementById('singlePlayer');
-const multiPlayerEl = document.getElementById('multiPlayer');
-const totalRoomsEl = document.getElementById('rooms')
-const totalPlayersEl = document.getElementById('players')
-const chatContentEl = document.getElementById('chatContent')
-const footer= document.getElementById('footer')
 
-var config = {};
-var board = null;
-//var game = new Chess( )
 var turnt = 0;
-  
-//—————————————————————————
-
-//—————————————————————————
-
-//—————————————————————————
-
-//—————————————————————————
 
 // singlePlayer
 function onDragStart2 (source, piece, position, orientation)
@@ -49,8 +25,7 @@ function onSnapEnd2()
     board.position(game.fen())
 }
 
-//Connection will be established after webpage is refreshed
-const socket = io()
+
 
 //Triggers after a piece is dropped on the board
 // single player 
@@ -71,36 +46,9 @@ function onDrop2(source, target)
     window.setTimeout(makeRandomMove, 250)
 }
 
-//Update Status Event
-socket.on('updateEvent', ({ status, fen, pgn }) => {
-    statusEl.textContent = status
-    fenEl.textContent = fen
-    pgnEl.textContent = pgn
-})
-
-socket.on('printing', (fen) => {
-    console.log(fen)
-})
-
-
-//To Update Status Element
-socket.on('updateStatus', (turn) =>
-{
-    if (board.orientation().includes(turn)) {
-        statusEl.textContent = "Your turn"
-    }
-    else {
-        statusEl.textContent = "Opponent's turn"
-    }
-})
 
 
 
-//Client disconnected in between
-socket.on('disconnectedStatus', () =>
-{
-    msg_html_layer('Opponent left the game!')
-})
 
 
 
@@ -129,31 +77,7 @@ socket.on('receiveMessage', (user, message) => {
 
 })
 
-//Rooms List update
-socket.on('roomsList', (rooms) =>
-{
-    // roomsListEl.innerHTML = null;
-     console.log('Rooms List event triggered ',  rooms);
-    totalRoomsEl.innerHTML = rooms.length
-    var dropRooms = document.getElementById('dropRooms')
-    while (dropRooms.firstChild) {
-        dropRooms.removeChild(dropRooms.firstChild)
-    }
-    // added event listener to each room
-    rooms.forEach(x => {
-        var roomEl = document.createElement('div')
-        roomEl.setAttribute('class', 'item')
 
-        roomEl.setAttribute('data-value', x)
-        roomEl.textContent = x;
-        dropRooms.appendChild(roomEl)
-    })
-})
-
-socket.on('updateTotalUsers', totalUsers => {
-    console.log('updateTotalUsers: ', totalUsers)
-    totalPlayersEl.innerHTML = totalUsers;
-})
 
 //Message will be sent only after you click the button
 //sendButtonEl.addEventListener('click', (e) =>

@@ -261,6 +261,21 @@ animationDuration: 300 // pieces animation duration in milliseconds. Disable all
 import { io } from "https://cdn.socket.io/4.3.0/socket.io.esm.min.js";
 const socket = io();
 
+const formEl = document.querySelectorAll('#joinForm > div > input')
+const messageEl = document.querySelector('#message')
+const statusEl = document.querySelector('#status')
+const ChatEl = document.querySelector('#chat')
+const sendButtonEl = document.querySelector('#send')
+const roomsListEl = document.getElementById('roomsList');
+const myAudioEl = document.getElementById('myAudio');
+const singlePlayerEl = document.getElementById('singlePlayer');
+const multiPlayerEl = document.getElementById('multiPlayer');
+const totalRoomsEl = document.getElementById('rooms')
+const totalPlayersEl = document.getElementById('players')
+const chatContentEl = document.getElementById('chatContent')
+const footer= document.getElementById('footer')
+
+
 let seed = 71;
 function random()
 {
@@ -285,6 +300,8 @@ function makeEngineMove(chessboard)
 // see https://github.com/shaack/cm-chessboard#enablemoveinputeventhandler-color--undefined
 function inputHandler(event)
 {
+	const room = formEl[1].value;
+	
         console.log("inputHandler", event)
         if(event.type === INPUT_EVENT_TYPE.movingOverSquare)
 {
@@ -324,7 +341,6 @@ else
 // multiplayer move handler
 {
 	//emits event after piece is dropped
-    const room = formEl[1].value;
     myAudioEl.play();
     //console.log(room, ':', move)
     chess.move({from: move.from, to: move.to})
@@ -345,7 +361,9 @@ else
                             if (result.type === PROMOTION_DIALOG_RESULT_TYPE.pieceSelected) {
                                 chess.move({from: event.squareFrom, to: event.squareTo, promotion: result.piece.charAt(1)})
                                 event.chessboard.setPosition(chess.fen(), true)
- /* !!!!!!!!! !!! !!! !!! !!! исправить  !!!!!! !!! !!! !!! !!!  */                        makeEngineMove(event.chessboard)
+const promo_move = {from: event.squareFrom, to: event.squareTo, promotion: result.piece.charAt(1) }
+socket.emit('Dropped', promo_move, room )
+ /* !!!!!!!!! !!! !!! !!! !!! исправить  !!!!!! !!! !!! !!! !!!  */                        //makeEngineMove(event.chessboard)
                             }
 else
 {
@@ -466,7 +484,7 @@ room = formEl[1].value
 //—————————————————————————
 
 
-function msg_html_layer(msg)
+function msg_html_layer(msg, func=null)
 {
   //     if(!layer)
 {
@@ -477,6 +495,7 @@ function msg_html_layer(msg)
 {
             cm_board.removeHtmlLayer(layer)
             layer = null
+            if (func) func()
         }
            })
        }
@@ -546,37 +565,40 @@ socket.on('Dragging', (id, turn_color) =>
 {
     if (socket.id != id)
     {
-// add try ex here:
-   cm_board.enableMoveInput(inputHandler, turn_color)
+// Todo: errors here, remake it correctly:
+try { cm_board.enableMoveInput(inputHandler, turn_color) }
+    catch (err) { console.log(err) }
     }
     else cm_board.disableMoveInput()
 })
 
 
-</script>
 
-    <!-- telegram API -->
-    <script src="https://telegram.org/js/telegram-web-app.js">
-        // https://github.com/riobits/Telegram-Web-API-Cheatsheet
-    </script>
-    <!-- debug console --
-    <script src="https://cdn.jsdelivr.net/gh/c-kick/mobileConsole/hnl.mobileconsole.min.js"></script> -->
-    <script src="./js/semantic.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="client.js"></script>
-    <script  src="./js/star rating.js"></script>
-
-<script type="application/javascript">
-//—————————————————————————
-
-//If in check
-socket.on('inCheck', turn => {
-    if (cm_board.getOrientation().includes(turn))
-{ statusEl.textContent = "You are in Check!!" }
+//To Update Status Element
+socket.on('updateStatus', (turn) =>
+{
+	if (cm_board.getOrientation().includes(turn))
+    {
+        statusEl.textContent = "Your turn"
+    }
     else {
-        statusEl.textContent = "Opponent is in Check!!"
+        statusEl.textContent = "Opponent's turn"
     }
 })
+
+
+
+//If in check
+socket.on('inCheck', turn =>
+{
+    if (cm_board.getOrientation().includes(turn))
+{ statusEl.textContent = "You are in Check!" }
+    else {
+        statusEl.textContent = "Opponent is in Check!"
+    }
+})
+
+
 
 //If win or draw
 socket.on('gameOver', (turn, win) => 
@@ -584,7 +606,8 @@ socket.on('gameOver', (turn, win) =>
     cm_board.disableMoveInput()
     
     if (win) {
-        if (board.orientation().includes(turn)) {
+    	    if (cm_board.getOrientation().includes(turn))
+{
             msg_html_layer('You lost, better luck next time :) ')
         }
         else {
@@ -594,7 +617,80 @@ socket.on('gameOver', (turn, win) =>
     else {
         msg_html_layer('Game Draw')
     }
+    
+    setTimeout(function ()
+{ window.location.href = '/' }, 3000)
+
 })
+
+
+
+//Rooms List update
+socket.on('roomsList', (rooms) =>
+{
+    // roomsListEl.innerHTML = null;
+     console.log('Rooms List event triggered ',  rooms);
+    totalRoomsEl.innerHTML = rooms.length
+    var dropRooms = document.getElementById('dropRooms')
+    while (dropRooms.firstChild) {
+        dropRooms.removeChild(dropRooms.firstChild)
+    }
+    // added event listener to each room
+    rooms.forEach(x => {
+        var roomEl = document.createElement('div')
+        roomEl.setAttribute('class', 'item')
+
+        roomEl.setAttribute('data-value', x)
+        roomEl.textContent = x;
+        dropRooms.appendChild(roomEl)
+    })
+})
+
+
+
+//Update Status Event
+socket.on('updateEvent', ({ status, fen, pgn }) => {
+    statusEl.textContent = status
+    fenEl.textContent = fen
+    pgnEl.textContent = pgn
+})
+
+socket.on('printing', (fen) => {
+    console.log(fen)
+})
+
+
+
+socket.on('updateTotalUsers', totalUsers => {
+    console.log('updateTotalUsers: ', totalUsers)
+    totalPlayersEl.innerHTML = totalUsers;
+})
+
+
+
+//Client disconnected in between
+socket.on('disconnectedStatus', () =>
+{
+    msg_html_layer('Opponent left the game!', setTimeout(function ()
+{ window.location.href = '/' }, 3000) )
+})
+
+</script>
+
+    <!-- telegram API -->
+    <script src="https://telegram.org/js/telegram-web-app.js">
+        // https://github.com/riobits/Telegram-Web-API-Cheatsheet
+    </script>
+    <!-- debug console -->
+    <script src="https://cdn.jsdelivr.net/gh/c-kick/mobileConsole/hnl.mobileconsole.min.js"></script>
+    <script src="./js/semantic.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+<!--    <script src="client.js"></script> -->
+    <script  src="./js/star rating.js"></script>
+
+<script type="application/javascript">
+
+//—————————————————————————
 
 //—————————————————————————
 

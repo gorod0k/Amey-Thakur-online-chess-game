@@ -1,5 +1,5 @@
 {
-  "name": "mutiplayerchess",
+  "name": "telegram mutiplayer chess",
   "version": "0.2",
   "description": "",
   "main": "index.js",
@@ -7,9 +7,11 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "gorod_ok_77@mail.ru",
+  
+  "author": "kuznetsoff.yu@gmail.com",
   "license": "ISC",
-  "dependencies": {
+  "dependencies":
+{
     "chess.js": "^1.0.0-beta.8",
     "express": "^4.19.2",
     "socket.io": "^4.7.5"
